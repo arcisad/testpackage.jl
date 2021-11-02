@@ -4,6 +4,8 @@ using LinearAlgebra
 using Statistics
 using Random
 
+export generate_output
+
 function generate_output(a::Float64)::Float64
     return norm([mean(rand(10)), a])
 end
