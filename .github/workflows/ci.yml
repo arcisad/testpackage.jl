@@ -38,7 +38,8 @@ jobs:
             ${{ runner.os }}-test-${{ env.cache-name }}-
             ${{ runner.os }}-test-
             ${{ runner.os }}-
-      - run: julia -e "using Pkg;pkg\"registry add General\"
+      - run: julia -e "using Pkg;pkg\"registry add General\";pkg\"registry add https://github.com/arcisad/testregistry.jl.git\""
       - if: success() && github.event_name == 'push'
         run: 
           julia -e 'using Pkg; Pkg.add("LocalRegistry")'
+          julia scripts/register_package.jl
