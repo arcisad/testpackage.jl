@@ -30,8 +30,8 @@ function main()
         # registering new package
 
         if is_version_valid 
-            Pkg.develop(".")
-            register("$(package_name)")
+            Pkg.develop(package_name)
+            register(package_name)
         else
             throw("New version is invalid, please check the changes to version in Project.toml")
         end
