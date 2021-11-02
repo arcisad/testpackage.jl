@@ -23,6 +23,9 @@ jobs:
         arch:
           - x64
     steps:
+      - uses: fusion-engineering/setup-git-credentials@v2
+        with:
+          credentials: https://arcisad:${{ secrets.TOKEN }}@github.com/
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
@@ -42,6 +45,16 @@ jobs:
             ${{ runner.os }}-
       - run: julia -e "using Pkg;pkg\"registry add General\";pkg\"registry add https://github.com/arcisad/testregistry.jl.git\""
       - if: success() && github.event_name == 'push'
+        env:
+          GITHUB_USERNAME: ${{ github.event.schedule.user.login }}
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+          # github.event.schedule.user.login
+          # github.actor
+          # git config -l | head -2 ... 
+          # GITHUB_USER: jenkins-github-fugro
+          # GITHUB_TOKEN: ${{ secrets.GLOBAL_READ_REPOSITORIES_SECRET }}
         run: |
           julia -e 'using Pkg; Pkg.add("LocalRegistry")'
+          git config --global user.email "${{ github.event.pusher.email }}"
+          git config --global user.name "${{ github.event.pusher.name }}"
           julia scripts/register_package.jl
