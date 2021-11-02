@@ -24,6 +24,8 @@ jobs:
           - x64
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - uses: julia-actions/setup-julia@v1
         with:
           version: ${{ matrix.version }}
@@ -38,7 +40,8 @@ jobs:
             ${{ runner.os }}-test-${{ env.cache-name }}-
             ${{ runner.os }}-test-
             ${{ runner.os }}-
-      - run: julia -e "using Pkg;pkg\"registry add General\"
+      - run: julia -e "using Pkg;pkg\"registry add General\";pkg\"registry add https://github.com/arcisad/testregistry.jl.git\""
       - if: success() && github.event_name == 'push'
-        run: 
+        run: |
           julia -e 'using Pkg; Pkg.add("LocalRegistry")'
+          julia scripts/register_package.jl

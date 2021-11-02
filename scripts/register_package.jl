@@ -15,7 +15,7 @@ function main()
         # read the diff between current and last commit
         diff = readlines(`git diff HEAD^ HEAD Project.toml`)
         # check if the version has changed
-        if all(.!occursin.("version", lines))
+        if all(.!occursin.("version", diff))
             @info "No change in the package version"
             return ""
         end
